@@ -7,7 +7,7 @@ import { AiOutlineMenu } from 'react-icons/ai';
 
 const Nav = (): React.JSX.Element => {
   const session = false;
-  const [toggle, setToggle] = useState(false);
+  const [toggle, setToggle] = useState<boolean>(false);
 
   return (
     <nav className="flex-between w-full mb-16 pt-3">
