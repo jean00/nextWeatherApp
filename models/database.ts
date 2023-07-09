@@ -9,7 +9,7 @@ export const connectToDB = async () => {
     return;
   } else {
     try {
-      await mongoose.connect(url, {
+      await mongoose.connect(url!, {
         dbName: 'users',
       });
       isConnected = true;
