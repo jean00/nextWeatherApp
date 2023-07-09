@@ -7,7 +7,6 @@ const getWeatherData = async (input: string) => {
   try {
     const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${input}&APPID=20f7632ffc2c022654e4093c6947b4f4`, { mode: 'cors' });
     const data = await response.json();
-    console.log('data: ', await data);
     const {
       coord: { lon, lat },
       name,
@@ -58,15 +57,37 @@ interface IWeatherData {
   sunset: number;
   icon: string;
 }
+
+interface IForecast {
+  dt: number;
+  humidity: number;
+  sunrise: number;
+  sunset: number;
+  temp: {
+    max: number;
+    min: number;
+  };
+  weather: [
+    {
+      id: number;
+      icon: string;
+      description: string;
+    }
+  ];
+  wind_speed: number;
+}
+
 const Home = (): React.JSX.Element => {
   const [input, setInput] = useState<string>('');
   const [currWeather, setCurrWeather] = useState<IWeatherData | null>(null);
+  const [forecasts, setForecasts] = useState<IForecast[]>([]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => setInput(e.target.value);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(input);
+    setForecasts([]); // clear the forecasts array
+    setCurrWeather(null); // clear the current weather
     try {
       const foreCast = await getWeatherData(input);
       console.log('foreCast: ', foreCast);
@@ -75,15 +96,15 @@ const Home = (): React.JSX.Element => {
         name,
         country,
         current: {
-          temp, // temperature convert - 273.15
+          temp,
           humidity,
           wind_speed,
-          visibility, // visibility convert / 1000
+          visibility,
           feels_like,
           dt,
           sunrise,
           sunset,
-          weather: [{ description, icon /* id */ }],
+          weather: [{ description, icon }],
         },
       }: IWeatherObj = foreCast;
       setCurrWeather((prevState) => ({
@@ -101,21 +122,47 @@ const Home = (): React.JSX.Element => {
         sunset,
         icon,
       }));
+      // 7 days forecast
+      foreCast.daily.forEach((day: IForecast, index: number) => {
+        if (index > 0) {
+          const {
+            dt,
+            humidity,
+            sunrise,
+            sunset,
+            temp: { max, min },
+            weather: [{ id, icon, description }],
+            wind_speed,
+          }: IForecast = day;
+
+          const newForecast = {
+            dt,
+            humidity,
+            sunrise,
+            sunset,
+            temp: { max, min },
+            weather: [{ id, icon, description }],
+            wind_speed,
+          };
+
+          setForecasts((prevForecasts) => [...prevForecasts, newForecast]);
+        }
+      });
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
-    console.log('currWeather: ', currWeather);
-  }, [currWeather]);
+    console.log('forecasts: ', forecasts);
+  }, [forecasts]);
 
   return (
     <section className="w-full flex-center flex-col">
       <form className="relative w-full flex-center" onSubmit={handleSubmit}>
         <input type="text" placeholder="Enter the country name" value={input} onChange={handleChange} required className="search_input peer" />
       </form>
-      {currWeather && <Weather city={currWeather} />}
+      {currWeather && <Weather curr={currWeather} forecasts={forecasts} />}
     </section>
   );
 };
