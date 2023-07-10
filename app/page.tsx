@@ -60,9 +60,6 @@ interface IWeatherData {
 
 interface IForecast {
   dt: number;
-  humidity: number;
-  sunrise: number;
-  sunset: number;
   temp: {
     max: number;
     min: number;
@@ -74,13 +71,12 @@ interface IForecast {
       description: string;
     }
   ];
-  wind_speed: number;
 }
 
 const Home = (): React.JSX.Element => {
   const [input, setInput] = useState<string>('');
   const [currWeather, setCurrWeather] = useState<IWeatherData | null>(null);
-  const [forecasts, setForecasts] = useState<IForecast[]>([]);
+  const [forecasts, setForecasts] = useState<any>([]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => setInput(e.target.value);
 
@@ -127,25 +123,17 @@ const Home = (): React.JSX.Element => {
         if (index > 0) {
           const {
             dt,
-            humidity,
-            sunrise,
-            sunset,
             temp: { max, min },
             weather: [{ id, icon, description }],
-            wind_speed,
           }: IForecast = day;
 
           const newForecast = {
             dt,
-            humidity,
-            sunrise,
-            sunset,
             temp: { max, min },
             weather: [{ id, icon, description }],
-            wind_speed,
           };
 
-          setForecasts((prevForecasts) => [...prevForecasts, newForecast]);
+          setForecasts((prevForecasts: any) => [...prevForecasts, newForecast]);
         }
       });
     } catch (err) {
