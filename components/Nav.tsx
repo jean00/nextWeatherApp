@@ -24,13 +24,15 @@ const Nav = (): React.JSX.Element => {
 
   return (
     <nav className="flex-between w-full mb-16 pt-3">
-      <div className="flex gap-6">
-        <Image className="hidden md:block object-contain" src={Icon} alt="logo" width={70} height={30} />
-        <h1 className="head_text text-center text-xs">
-          Weather
-          <span className="orange_gradient text-center"> Forecast</span>
-        </h1>
-      </div>
+      <Link href="/">
+        <div className="flex gap-6">
+          <Image className="hidden md:block object-contain" src={Icon} alt="logo" width={70} height={30} />
+          <h1 className="head_text text-center text-xs">
+            Weather
+            <span className="orange_gradient text-center"> Forecast</span>
+          </h1>
+        </div>
+      </Link>
       {/* Desktop Navigation */}
       <div className="sm:flex  hidden">
         {session?.user ? (

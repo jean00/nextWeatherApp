@@ -2,155 +2,133 @@
 
 import { useEffect, useState } from 'react';
 import Weather from '@/components/Weather';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { IForecast, IWeatherData, IWeatherObj } from '@/utils/weatherInterfaces';
+
+const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
 const getWeatherData = async (input: string) => {
   try {
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${input}&APPID=20f7632ffc2c022654e4093c6947b4f4`, { mode: 'cors' });
+    // Getting the coordinates of the city
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${input}&APPID=${API_KEY}`, { mode: 'cors' });
     const data = await response.json();
     const {
       coord: { lon, lat },
       name,
       sys: { country },
-    } = data; // Desctructuring the data object
-    const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&APPID=20f7632ffc2c022654e4093c6947b4f4`, {
+    } = data; // Destructuring the data object
+    // Using the coordinates to get the weather data
+    const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&APPID=${API_KEY}`, {
       mode: 'cors',
     });
     const weatherData = await weatherResponse.json();
-    return { name, country, ...weatherData }; // returning an obj with  name, country, and weather data
+    // Returning an obj with  name, country, and weather data
+    return { name, country, ...weatherData };
   } catch (err) {
     console.log(err);
   }
 };
 
-interface IWeatherObj {
-  name: string;
-  country: string;
-  current: {
-    temp: number;
-    humidity: number;
-    wind_speed: number;
-    visibility: number;
-    feels_like: number;
-    dt: number;
-    sunrise: number;
-    sunset: number;
-    weather: [
-      {
-        description: string;
-        icon: string;
-      }
-    ];
-  };
-}
+const formatWeatherData = (name: string, country: string, data: IWeatherObj['current']): IWeatherData => {
+  const {
+    temp,
+    humidity,
+    wind_speed,
+    visibility,
+    feels_like,
+    dt,
+    sunrise,
+    sunset,
+    weather: [{ description, icon }],
+  } = data;
 
-interface IWeatherData {
-  name: string;
-  country: string;
-  description: string;
-  temp: number;
-  humidity: number;
-  wind_speed: number;
-  visibility: number;
-  feels_like: number;
-  dt: number;
-  sunrise: number;
-  sunset: number;
-  icon: string;
-}
-
-interface IForecast {
-  dt: number;
-  temp: {
-    max: number;
-    min: number;
+  return {
+    name,
+    country,
+    description,
+    temp,
+    humidity,
+    wind_speed,
+    visibility,
+    feels_like,
+    dt,
+    sunrise,
+    sunset,
+    icon,
   };
-  weather: [
-    {
-      id: number;
-      icon: string;
-      description: string;
-    }
-  ];
-}
+};
+
+const formatForecasts = (data: IForecast[]): IForecast[] => {
+  // Remove the first day from the array because it's equal the current day
+  return data.slice(1).map((day) => {
+    const {
+      dt,
+      temp: { max, min },
+      weather: [{ id, icon, description }],
+    } = day;
+
+    return {
+      dt,
+      temp: { max, min },
+      weather: [{ id, icon, description }],
+    };
+  });
+};
 
 const Home = (): React.JSX.Element => {
   const [input, setInput] = useState<string>('');
   const [currWeather, setCurrWeather] = useState<IWeatherData | null>(null);
-  const [forecasts, setForecasts] = useState<any>([]);
+  const [forecasts, setForecasts] = useState<IForecast[]>([]);
+  const [error, setError] = useState<boolean>(false);
+  const searchParams = useSearchParams();
+  const searchCity = searchParams.get('search');
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!searchCity) return;
+    // fetch data from the url parameter is there's any
+    const fetchWeather = async () => {
+      try {
+        const foreCast = await getWeatherData(searchCity);
+        // current weather
+        const { name, country, current, daily }: IWeatherObj = foreCast;
+        setCurrWeather(formatWeatherData(name, country, current));
+        setForecasts(formatForecasts(daily));
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchWeather();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => setInput(e.target.value);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    setForecasts([]); // clear the forecasts array
-    setCurrWeather(null); // clear the current weather
+    // Reset error, forecasts, and currWeather
+    setError(false);
+    setForecasts([]);
+    setCurrWeather(null);
+    // Fetch weather data
     try {
       const foreCast = await getWeatherData(input);
-      console.log('foreCast: ', foreCast);
-      // current weather
-      const {
-        name,
-        country,
-        current: {
-          temp,
-          humidity,
-          wind_speed,
-          visibility,
-          feels_like,
-          dt,
-          sunrise,
-          sunset,
-          weather: [{ description, icon }],
-        },
-      }: IWeatherObj = foreCast;
-      setCurrWeather((prevState) => ({
-        ...prevState,
-        name,
-        country,
-        description,
-        temp,
-        humidity,
-        wind_speed,
-        visibility,
-        feels_like,
-        dt,
-        sunrise,
-        sunset,
-        icon,
-      }));
-      // 7 days forecast
-      foreCast.daily.forEach((day: IForecast, index: number) => {
-        if (index > 0) {
-          const {
-            dt,
-            temp: { max, min },
-            weather: [{ id, icon, description }],
-          }: IForecast = day;
-
-          const newForecast = {
-            dt,
-            temp: { max, min },
-            weather: [{ id, icon, description }],
-          };
-
-          setForecasts((prevForecasts: any) => [...prevForecasts, newForecast]);
-        }
-      });
+      const { name, country, current, daily }: IWeatherObj = foreCast;
+      setCurrWeather(formatWeatherData(name, country, current));
+      setForecasts(formatForecasts(daily));
     } catch (err) {
-      console.log(err);
+      setError(true);
+      setInput('');
     }
+    // Reset pathname to /
+    router.push('/', undefined, { shallow: true });
   };
-
-  useEffect(() => {
-    console.log('forecasts: ', forecasts);
-  }, [forecasts]);
 
   return (
     <section className="w-full flex-center flex-col">
       <form className="relative w-full flex-center" onSubmit={handleSubmit}>
         <input type="text" placeholder="Enter the country name" value={input} onChange={handleChange} required className="search_input peer" />
       </form>
-      {currWeather && <Weather curr={currWeather} forecasts={forecasts} />}
+      {currWeather ? <Weather curr={currWeather} forecasts={forecasts} /> : error && <h1>City/Country/State not found</h1>}
     </section>
   );
 };
