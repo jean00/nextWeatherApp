@@ -1,34 +1,31 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Weather Forecast Website
 
-## Getting Started
+This is a weather forecast website built with Next.js, TypeScript, Tailwind CSS, NextAuth.js, Mongoose, and date-fns. It fetches weather data from the OpenWeatherAPI to provide users with up-to-date weather information.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+- Fetches weather forecast data from the OpenWeatherAPI.
+- User authentication and session management using NextAuth.js.
+- Integration with MongoDB using Mongoose for CRUD operations.
+- Responsive and modern UI design with Tailwind CSS.
+- Date and time manipulation using date-fns.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Technologies Used
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- [Next.js](https://nextjs.org/) - A React framework for building server-side rendered and static web applications.
+- [TypeScript](https://www.typescriptlang.org/) - A typed superset of JavaScript that compiles to plain JavaScript.
+- [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework for rapid UI development.
+- [NextAuth.js](https://next-auth.js.org/) - An authentication library for Next.js applications.
+- [Mongoose](https://mongoosejs.com/) - An object data modeling (ODM) library for MongoDB and Node.js.
+- [date-fns](https://date-fns.org/) - A library for manipulating, formatting, and parsing dates and times.
+- [OpenWeatherAPI](https://openweathermap.org/) - A weather data provider offering a RESTful API for accessing weather forecast data.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Usage
 
-## Learn More
+- Upon accessing the application, you will see a weather forecast display.
+- Users can sign in using the provided authentication options to access additional features.
+- The weather forecast will update dynamically based on the selected location.
+- Users can perform CRUD operations to manage saved locations using the integrated MongoDB database.
+- Use the appropriate UI components and features to view, search, and manage weather forecasts and saved locations.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Try it [here](https://weatherapp-jean00.vercel.app/)
