@@ -1,5 +1,6 @@
 'use client';
-import { SessionProvider, Session } from 'next-auth/react';
+import { SessionProvider } from 'next-auth/react';
+import { Session } from 'next-auth';
 
 interface IProviderProps {
   children: React.ReactNode;

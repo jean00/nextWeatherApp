@@ -3,25 +3,26 @@ import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { SavedCity } from '@/components/SavedCity';
 import { ISavedCity } from '@/utils/weatherInterfaces';
+import { Session } from 'next-auth';
 
 const MyProfile = () => {
-  const { data: session }: any = useSession();
+  const { data: session }: { data: Session | null } = useSession();
   const [savedCities, setSavedCities] = useState([]);
 
   useEffect(() => {
     const getSavedCities = async () => {
       try {
-        const res = await fetch(`/api/users/${session?.user.id}/cities`);
+        const res = await fetch(`/api/users/${session?.user?.id}/cities`);
         const data = await res.json();
         setSavedCities(data);
       } catch (error) {
         console.log(error);
       }
     };
-    if (session?.user.id) getSavedCities();
+    if (session?.user?.id) getSavedCities();
   }, []);
 
-  const handleDelete = async (data) => {
+  const handleDelete = async (data: ISavedCity) => {
     const hasConfirmed = confirm('Are you sure you want to delete this city?');
     if (hasConfirmed) {
       try {

@@ -78,7 +78,7 @@ const formatForecasts = (data: IForecast[]): IForecast[] => {
 const Home = (): React.JSX.Element => {
   const [input, setInput] = useState<string>('');
   const [currWeather, setCurrWeather] = useState<IWeatherData | null>(null);
-  const [forecasts, setForecasts] = useState<any>([]);
+  const [forecasts, setForecasts] = useState<IForecast[]>([]);
   const [error, setError] = useState<boolean>(false);
   const searchParams = useSearchParams();
   const searchCity = searchParams.get('search');
@@ -120,7 +120,7 @@ const Home = (): React.JSX.Element => {
       setInput('');
     }
     // Reset pathname to /
-    router.push('/', undefined, { shallow: true });
+    router.push('/', undefined);
   };
 
   return (
@@ -128,7 +128,7 @@ const Home = (): React.JSX.Element => {
       <form className="relative w-full flex-center" onSubmit={handleSubmit}>
         <input type="text" placeholder="Enter the country name" value={input} onChange={handleChange} required className="search_input peer" />
       </form>
-      {currWeather ? <Weather curr={currWeather} forecasts={forecasts} /> : error && <h1>City/Country/State not found</h1>}
+      {currWeather ? <Weather curr={currWeather} forecasts={forecasts} /> : error && <h1 className="mt-5">City/Country/State not found</h1>}
     </section>
   );
 };

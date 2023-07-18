@@ -4,6 +4,7 @@ import Forecasts from './Forecasts';
 import { useSession } from 'next-auth/react';
 import { ICurrForecastData } from '@/utils/weatherInterfaces';
 import uuid from 'react-uuid';
+import { Session } from 'next-auth';
 
 const Weather: React.FC<ICurrForecastData> = ({ curr, forecasts }: ICurrForecastData) => {
   const { name, country, description, temp, humidity, wind_speed, visibility, feels_like, dt, sunrise, sunset, icon } = curr;
@@ -14,7 +15,9 @@ const Weather: React.FC<ICurrForecastData> = ({ curr, forecasts }: ICurrForecast
   // Convert Kelvin to Celsius
   const convertedTemp = (temp - 273.15).toFixed(0);
   const convertedFeelsLike = (feels_like - 273.15).toFixed(0);
-  const { data: session }: any = useSession();
+  const { data: session }: { data: Session | null } = useSession();
+
+  console.log(session);
 
   const handleSaveCity = async () => {
     try {
@@ -23,9 +26,8 @@ const Weather: React.FC<ICurrForecastData> = ({ curr, forecasts }: ICurrForecast
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId: session?.user.id, name, country }),
+        body: JSON.stringify({ userId: session?.user?.id, name, country }),
       });
-      console.log(res);
       if (res.ok) return alert('City saved!');
       if (res.status === 409) return alert('City already saved!');
     } catch (error) {
