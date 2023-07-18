@@ -11,7 +11,7 @@ interface IProps extends ISavedCity {
 
 export const SavedCity = ({ data, onDelete }: IProps | any) => {
   const router = useRouter();
-  const { data: session }: { data: Session | null } = useSession();
+  const { data: session }: any = useSession();
   const pathName = usePathname();
 
   const handleSearch = () => {

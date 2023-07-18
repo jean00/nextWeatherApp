@@ -15,7 +15,7 @@ const Weather: React.FC<ICurrForecastData> = ({ curr, forecasts }: ICurrForecast
   // Convert Kelvin to Celsius
   const convertedTemp = (temp - 273.15).toFixed(0);
   const convertedFeelsLike = (feels_like - 273.15).toFixed(0);
-  const { data: session }: { data: Session | null } = useSession();
+  const { data: session }: any = useSession();
 
   console.log(session);
 
