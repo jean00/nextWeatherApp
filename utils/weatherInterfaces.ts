@@ -61,23 +61,29 @@ export interface ICurrForecastData {
     sunset: number;
     icon: string;
   };
-  forecasts:
-    | {
-        dt: number;
-        humidity: number;
-        sunrise: number;
-        sunset: number;
-        temp: {
-          max: number;
-          min: number;
-        };
-        weather: [
-          {
-            id: number;
-            icon: string;
-            description: string;
-          }
-        ];
-        wind_speed: number;
-      }[];
+  forecasts: {
+    dt: number;
+    humidity: number;
+    sunrise: number;
+    sunset: number;
+    temp: {
+      max: number;
+      min: number;
+    };
+    weather: [
+      {
+        id: number;
+        icon: string;
+        description: string;
+      }
+    ];
+    wind_speed: number;
+  }[];
+}
+
+export interface ISavedCity {
+  _id: string;
+  name: string;
+  country: string;
+  creator: string;
 }

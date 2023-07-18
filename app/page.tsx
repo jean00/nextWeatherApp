@@ -78,7 +78,7 @@ const formatForecasts = (data: IForecast[]): IForecast[] => {
 const Home = (): React.JSX.Element => {
   const [input, setInput] = useState<string>('');
   const [currWeather, setCurrWeather] = useState<IWeatherData | null>(null);
-  const [forecasts, setForecasts] = useState<IForecast[]>([]);
+  const [forecasts, setForecasts] = useState<any>([]);
   const [error, setError] = useState<boolean>(false);
   const searchParams = useSearchParams();
   const searchCity = searchParams.get('search');

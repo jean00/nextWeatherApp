@@ -2,13 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { SavedCity } from '@/components/SavedCity';
-
-interface ISavedCity {
-  _id: string;
-  name: string;
-  country: string;
-  creator: string;
-}
+import { ISavedCity } from '@/utils/weatherInterfaces';
 
 const MyProfile = () => {
   const { data: session }: any = useSession();
@@ -50,9 +44,11 @@ const MyProfile = () => {
       </h1>
       <p className="desc text-left">Here you can find your saved cities</p>
       <div className="mt-10 prompt_layout">
-        {savedCities.map((city: ISavedCity) => {
-          return <SavedCity key={city._id} data={city} onDelete={handleDelete} />;
-        })}
+        {savedCities.length !== 0 ? (
+          savedCities.map((city: ISavedCity) => <SavedCity key={city._id} data={city} onDelete={handleDelete} />)
+        ) : (
+          <h1>You have no saved cities</h1>
+        )}
       </div>
     </section>
   );
