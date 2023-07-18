@@ -3,10 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { SavedCity } from '@/components/SavedCity';
 import { ISavedCity } from '@/utils/weatherInterfaces';
-import { Session } from 'next-auth';
 
 const MyProfile = () => {
-  const { data: session }: { data: Session | null } = useSession();
+  const { data: session }: any = useSession();
   const [savedCities, setSavedCities] = useState([]);
 
   useEffect(() => {
