@@ -9,7 +9,7 @@ interface IProps extends ISavedCity {
   onDelete?: (data: ISavedCity) => void;
 }
 
-export const SavedCity = ({ data, onDelete }: IProps) => {
+export const SavedCity = ({ data, onDelete }: IProps | any) => {
   const router = useRouter();
   const { data: session }: { data: Session | null } = useSession();
   const pathName = usePathname();
